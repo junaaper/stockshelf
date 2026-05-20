@@ -1,0 +1,67 @@
+---
+- name: Configure all nodes
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install required packages
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg
+          - git
+          - unzip
+        state: present
+
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Start and enable Docker
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Add ubuntu user to docker group
+      user:
+        name: ubuntu
+        groups: docker
+        append: yes
+
+- name: Configure master node
+  hosts: master
+  become: yes
+  tasks:
+    - name: Check kubectl version
+      command: kubectl version --client --output=yaml
+      register: kubectl_version
+      ignore_errors: yes
+
+    - name: Print kubectl version
+      debug:
+        msg: "{{ kubectl_version.stdout }}"
+
+- name: Configure Jenkins on master
+  hosts: master
+  become: yes
+  tasks:
+    - name: Ensure Docker is running
+      systemd:
+        name: docker
+        state: started
+
+    - name: Check if Jenkins container exists
+      command: docker ps -a --filter name=jenkins --format "{{ '{{' }}.Names{{ '}}' }}"
+      register: jenkins_check
+
+    - name: Print Jenkins status
+      debug:
+        msg: "Jenkins container status: {{ jenkins_check.stdout }}"
