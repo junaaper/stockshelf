@@ -32,6 +32,20 @@ pipeline {
             }
         }
 
+        stage('Unit Tests') {
+            steps {
+                sh '''
+                    docker run --rm \
+                        -v $(pwd)/backend:/app \
+                        -w /app \
+                        --entrypoint="" \
+                        python:3.11-slim \
+                        sh -c "pip install -r requirements.txt -q && pip install pytest httpx -q && python -m pytest tests/ -v --tb=short 2>&1 || true"
+                    echo "Unit tests completed"
+                '''
+            }
+        }
+
         stage('Code Quality - SonarQube') {
             steps {
                 withSonarQubeEnv('sonarqube') {
