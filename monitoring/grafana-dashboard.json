@@ -3,7 +3,7 @@
   "uid": "stockshelf-001",
   "timezone": "browser",
   "schemaVersion": 38,
-  "version": 1,
+  "version": 4,
   "refresh": "10s",
   "panels": [
     {
@@ -12,12 +12,7 @@
       "type": "stat",
       "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 },
       "datasource": "Prometheus",
-      "targets": [
-        {
-          "expr": "sum(increase(http_requests_total[1h]))",
-          "legendFormat": "Requests"
-        }
-      ],
+      "targets": [{ "expr": "sum(increase(http_requests_total[1h]))", "legendFormat": "Requests" }],
       "options": { "colorMode": "background", "graphMode": "area" }
     },
     {
@@ -26,12 +21,7 @@
       "type": "stat",
       "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 },
       "datasource": "Prometheus",
-      "targets": [
-        {
-          "expr": "count(container_last_seen{name=~\"stockshelf.*\"})",
-          "legendFormat": "Containers"
-        }
-      ],
+      "targets": [{ "expr": "count(container_last_seen{name=~\"stockshelf.*\"})", "legendFormat": "Containers" }],
       "options": { "colorMode": "background", "graphMode": "none" }
     },
     {
@@ -40,12 +30,7 @@
       "type": "stat",
       "gridPos": { "x": 12, "y": 0, "w": 6, "h": 4 },
       "datasource": "Prometheus",
-      "targets": [
-        {
-          "expr": "sum(rate(http_requests_total[5m]))",
-          "legendFormat": "req/s"
-        }
-      ],
+      "targets": [{ "expr": "sum(rate(http_requests_total[5m]))", "legendFormat": "req/s" }],
       "options": { "colorMode": "background", "graphMode": "area" }
     },
     {
@@ -54,22 +39,8 @@
       "type": "stat",
       "gridPos": { "x": 18, "y": 0, "w": 6, "h": 4 },
       "datasource": "Prometheus",
-      "targets": [
-        {
-          "expr": "sum(increase(http_requests_total{status=~\"5..\"}[1h])) or vector(0)",
-          "legendFormat": "Errors"
-        }
-      ],
-      "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "thresholds": {
-          "steps": [
-            { "color": "green", "value": null },
-            { "color": "red", "value": 1 }
-          ]
-        }
-      }
+      "targets": [{ "expr": "sum(increase(http_requests_total{status=~\"5..\"}[1h])) or vector(0)", "legendFormat": "Errors" }],
+      "options": { "colorMode": "background", "graphMode": "none" }
     },
     {
       "id": 5,
@@ -77,12 +48,7 @@
       "type": "timeseries",
       "gridPos": { "x": 0, "y": 4, "w": 12, "h": 8 },
       "datasource": "Prometheus",
-      "targets": [
-        {
-          "expr": "sum by (handler) (rate(http_requests_total[5m]))",
-          "legendFormat": "{{handler}}"
-        }
-      ]
+      "targets": [{ "expr": "sum by (handler) (rate(http_requests_total[5m]))", "legendFormat": "{{handler}}" }]
     },
     {
       "id": 6,
@@ -90,12 +56,7 @@
       "type": "timeseries",
       "gridPos": { "x": 12, "y": 4, "w": 12, "h": 8 },
       "datasource": "Prometheus",
-      "targets": [
-        {
-          "expr": "histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket[5m])))",
-          "legendFormat": "p95 latency"
-        }
-      ]
+      "targets": [{ "expr": "histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket[5m])))", "legendFormat": "p95 latency" }]
     },
     {
       "id": 7,
@@ -103,12 +64,7 @@
       "type": "timeseries",
       "gridPos": { "x": 0, "y": 12, "w": 12, "h": 8 },
       "datasource": "Prometheus",
-      "targets": [
-        {
-          "expr": "rate(container_cpu_usage_seconds_total{name=~\"stockshelf.*\"}[5m]) * 100",
-          "legendFormat": "{{name}}"
-        }
-      ]
+      "targets": [{ "expr": "rate(container_cpu_usage_seconds_total{name=~\"stockshelf.*\"}[5m]) * 100", "legendFormat": "{{name}}" }]
     },
     {
       "id": 8,
@@ -116,12 +72,7 @@
       "type": "timeseries",
       "gridPos": { "x": 12, "y": 12, "w": 12, "h": 8 },
       "datasource": "Prometheus",
-      "targets": [
-        {
-          "expr": "container_memory_usage_bytes{name=~\"stockshelf.*\"} / 1024 / 1024",
-          "legendFormat": "{{name}}"
-        }
-      ]
+      "targets": [{ "expr": "container_memory_usage_bytes{name=~\"stockshelf.*\"} / 1024 / 1024", "legendFormat": "{{name}}" }]
     },
     {
       "id": 9,
@@ -130,14 +81,8 @@
       "gridPos": { "x": 0, "y": 20, "w": 12, "h": 8 },
       "datasource": "Prometheus",
       "targets": [
-        {
-          "expr": "rate(container_network_receive_bytes_total{name=~\"stockshelf.*\"}[5m])",
-          "legendFormat": "{{name}} rx"
-        },
-        {
-          "expr": "rate(container_network_transmit_bytes_total{name=~\"stockshelf.*\"}[5m])",
-          "legendFormat": "{{name}} tx"
-        }
+        { "expr": "rate(container_network_receive_bytes_total{name=~\"stockshelf.*\"}[5m])", "legendFormat": "{{name}} rx" },
+        { "expr": "rate(container_network_transmit_bytes_total{name=~\"stockshelf.*\"}[5m])", "legendFormat": "{{name}} tx" }
       ]
     },
     {
@@ -146,12 +91,25 @@
       "type": "piechart",
       "gridPos": { "x": 12, "y": 20, "w": 12, "h": 8 },
       "datasource": "Prometheus",
-      "targets": [
-        {
-          "expr": "sum by (status) (increase(http_requests_total[1h]))",
-          "legendFormat": "{{status}}"
-        }
-      ]
+      "targets": [{ "expr": "sum by (status) (increase(http_requests_total[1h]))", "legendFormat": "{{status}}" }]
+    },
+    {
+      "id": 11,
+      "title": "StockShelf Application Logs",
+      "type": "logs",
+      "gridPos": { "x": 0, "y": 28, "w": 24, "h": 10 },
+      "datasource": "Loki",
+      "targets": [{ "expr": "{container=~\"/stockshelf.*\"}", "legendFormat": "" }],
+      "options": { "dedupStrategy": "none", "enableLogDetails": true, "showLabels": true, "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true }
+    },
+    {
+      "id": 12,
+      "title": "Backend Error Logs",
+      "type": "logs",
+      "gridPos": { "x": 0, "y": 38, "w": 24, "h": 8 },
+      "datasource": "Loki",
+      "targets": [{ "expr": "{container=\"/stockshelf-backend-1\", detected_level=\"error\"}", "legendFormat": "" }],
+      "options": { "dedupStrategy": "none", "enableLogDetails": true, "showLabels": true, "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true }
     }
   ]
 }
