@@ -62,6 +62,50 @@
       command: docker ps -a --filter name=jenkins --format "{{ '{{' }}.Names{{ '}}' }}"
       register: jenkins_check
 
+    - name: Start Jenkins container if stopped
+      command: docker start jenkins
+      when: jenkins_check.stdout == "jenkins"
+      ignore_errors: yes
+
+    - name: Get Jenkins status
+      command: docker inspect --format="{{ '{{' }}.State.Status{{ '}}' }}" jenkins
+      register: jenkins_status
+      ignore_errors: yes
+
     - name: Print Jenkins status
       debug:
-        msg: "Jenkins container status: {{ jenkins_check.stdout }}"
+        msg: "Jenkins is {{ jenkins_status.stdout }}"
+
+    - name: Ensure Jenkins port is accessible
+      wait_for:
+        host: localhost
+        port: 8080
+        timeout: 30
+      ignore_errors: yes
+
+    - name: Create Jenkins workspace directory
+      file:
+        path: /var/jenkins_home/workspace
+        state: directory
+        mode: '0755'
+      ignore_errors: yes
+
+    - name: Configure Docker daemon for Jenkins
+      copy:
+        content: |
+          {
+            "log-driver": "json-file",
+            "log-opts": {
+              "max-size": "10m",
+              "max-file": "3"
+            }
+          }
+        dest: /etc/docker/daemon.json
+        mode: '0644'
+      notify: Restart Docker
+
+  handlers:
+    - name: Restart Docker
+      systemd:
+        name: docker
+        state: restarted
