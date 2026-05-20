@@ -20,9 +20,12 @@ pipeline {
         stage('Install & Test Backend') {
             steps {
                 sh '''
-                    cd backend
-                    pip3 install -r requirements.txt --break-system-packages
-                    echo "Backend dependencies installed"
+                    docker run --rm \
+                        -v $(pwd)/backend:/app \
+                        -w /app \
+                        python:3.11-slim \
+                        pip install -r requirements.txt --quiet
+                    echo "Backend dependencies verified successfully"
                 '''
             }
         }
