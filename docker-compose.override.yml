@@ -1,0 +1,11 @@
+# Development overrides
+# Usage: docker compose -f docker-compose.yml -f docker-compose.override.yml up
+services:
+  backend:
+    volumes:
+      - ./backend:/app
+    environment:
+      - DEBUG=true
+  frontend:
+    volumes:
+      - ./frontend/src:/app/src
