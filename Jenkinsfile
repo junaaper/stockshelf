@@ -7,6 +7,7 @@ pipeline {
         IMAGE_BACKEND  = "${DOCKERHUB_USERNAME}/stockshelf-backend"
         IMAGE_FRONTEND = "${DOCKERHUB_USERNAME}/stockshelf-frontend"
         IMAGE_TAG = "${BUILD_NUMBER}"
+        SONAR_PROJECT_KEY = 'stockshelf'
     }
 
     stages {
@@ -28,6 +29,20 @@ pipeline {
                     ls frontend/
                     echo "Source verification passed"
                 '''
+            }
+        }
+
+        stage('Code Quality - SonarQube') {
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                    sh '''
+                        sonar-scanner \
+                            -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                            -Dsonar.projectName=StockShelf \
+                            -Dsonar.sources=backend/app,frontend/src \
+                            -Dsonar.host.url=http://172.31.21.46:9000
+                    '''
+                }
             }
         }
 
