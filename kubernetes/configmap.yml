@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: stockshelf-config
+  namespace: stockshelf
+data:
+  POSTGRES_DB: "stockshelf"
+  POSTGRES_USER: "stockshelf_user"
+  DATABASE_URL: "postgresql://stockshelf_user:stockshelf_pass@postgres-service:5432/stockshelf"
