@@ -26,3 +26,9 @@
 - Kubernetes Secrets for sensitive values
 - No hardcoded credentials in source code
 - Docker images scanned on every pipeline run
+
+## Pipeline Security Gates
+- Trivy scan runs on every commit with HIGH/CRITICAL threshold
+- SonarQube quality gate must pass before Docker build
+- Docker images scanned before push to registry
+- Kubernetes secrets used for all sensitive values
