@@ -1,0 +1,26 @@
+groups:
+  - name: stockshelf-alerts
+    rules:
+      - alert: HighErrorRate
+        expr: sum(rate(http_requests_total{status=~"5.."}[5m])) > 0.1
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High HTTP error rate on StockShelf"
+
+      - alert: ContainerDown
+        expr: absent(container_last_seen{name=~"stockshelf.*"})
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "StockShelf container is down"
+
+      - alert: HighMemoryUsage
+        expr: container_memory_usage_bytes{name=~"stockshelf.*"} / 1024 / 1024 > 512
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage on {{ $labels.name }}"
