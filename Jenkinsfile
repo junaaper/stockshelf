@@ -69,9 +69,9 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh '''
-                    cd /home/ubuntu/stockshelf
-                    docker compose pull
-                    docker compose up -d --force-recreate
+                    cp /home/ubuntu/stockshelf/.env .
+                    docker compose -f docker-compose.yml pull
+                    docker compose -f docker-compose.yml up -d --force-recreate
                 '''
             }
         }
