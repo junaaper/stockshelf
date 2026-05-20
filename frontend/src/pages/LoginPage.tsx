@@ -15,8 +15,8 @@ export default function LoginPage() {
     setLoading(true)
     try {
       const auth = await login(email, password)
-      localStorage.setItem('access_token', auth.access_token)
-      localStorage.setItem('refresh_token', auth.refresh_token)
+      localStorage.setItem('accessToken', auth.accessToken)
+      localStorage.setItem('refreshToken', auth.refreshToken)
       localStorage.setItem('user', JSON.stringify(auth.user))
       navigate('/dashboard')
     } catch (err: any) {
