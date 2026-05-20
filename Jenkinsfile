@@ -35,13 +35,15 @@ pipeline {
         stage('Code Quality - SonarQube') {
             steps {
                 withSonarQubeEnv('sonarqube') {
-                    sh '''
-                        sonar-scanner \
-                            -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                            -Dsonar.projectName=StockShelf \
-                            -Dsonar.sources=backend/app,frontend/src \
-                            -Dsonar.host.url=http://172.31.21.46:9000
-                    '''
+                    withEnv(["PATH+SONAR=${tool 'sonarqube-scanner'}/bin"]) {
+                        sh '''
+                            sonar-scanner \
+                                -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                                -Dsonar.projectName=StockShelf \
+                                -Dsonar.sources=backend/app,frontend/src \
+                                -Dsonar.host.url=http://172.31.21.46:9000
+                        '''
+                    }
                 }
             }
         }
